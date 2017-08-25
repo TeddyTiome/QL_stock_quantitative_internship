@@ -1,0 +1,35 @@
+<QLSim>
+
+<Macros LOCAL="" />
+<Universe id="envStandard" startDate="20060101" endDate="0" />
+
+<Modules>
+  <!-- universe -->
+  <Module id="TOP2000" handler="Universe" />
+  <!-- data -->
+  <Module id="basedata" handler="DataRegistry" />
+  <Module id="adjPrice" handler="DataRegistry" />
+
+  <!-- alphas -->
+  <Module id="t3" path="${SOREPO}/yuhao/yuhao_t3.version.3_0/libyuhao_t3.version.3_0.so" handler="AlphaHandler" /> 
+</Modules>
+
+
+
+
+<Portfolio moduleId="Portfolio" id="MyPort" booksize="20e6" homecurrency="CNY" combinationId="AlphaComboSimple" doCombo="false">
+  <Stats moduleId="StatsSimple" vwappnl="false" tax="0." fee="0."/>
+  
+  <Alpha moduleId="t3" id="yuhao_t3" universeId="TOP2000" para1="3" para2="50" para3="5" booksize="20e6" delay="1" method="1" ndays="5">
+  <Description name="t3" author="yuhao" ideaorigin="qilin" birthday="20170608" category="price_volume" delay="1"/>
+  <Operations>
+    <Operation moduleId="AlphaOpPower" exp="8.0"/>
+    <Operation moduleId="AlphaOpDecay" days="20"/>
+    <Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+    <Operation moduleId="AlphaOpIndNeut" group="industry"/>
+  </Operations>
+  </Alpha>
+
+</Portfolio>
+
+</QLSim>

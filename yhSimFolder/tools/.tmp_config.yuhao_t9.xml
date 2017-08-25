@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<QLSim>
+<Macros MODULES="/data/alphaSystem/release/sim/version/1.0.0/commonLibs" CACHE="/data/alphaSystem/cache/version/1.0.0" DMGRLIB="/data/alphaSystem/release/dmgrManager/version/1.0.0/dmgrLibs" RAWPRICES="" RAWDATA="/data/stock/newSystemData/rawdata" SOREPO="/data/alphaSystem/soReposit/version/1.0.0" LOCAL=""/>
+<Constants backdays="256"  checkPointDir = "" checkPointDays = "5" />
+<Universe path="${DMGRLIB}/../env/libQLSIM_envMakerMapping.so" dataPath="${RAWDATA}/basedata/price" cachePath="${CACHE}/envMaker" simmode="alphaonly" endDate="0" id="envStandard" startDate="20090101"/>
+<Modules>
+<Module path="${DMGRLIB}/universe/libQLSIM_dataManagerUniverse.so" cachePath='${CACHE}/universe/TOP2000' dataPath='${RAWDATA}/wind/IPODate/ipo.csv' universe="2000" volwindow="63" minprice="1." maxprice="1000." minvol="0." mincap="0." minlive="5" postipo="40" handler="Universe" id="TOP2000"/>
+<Module path="${DMGRLIB}/basedata/libQLSIM_dataManagerBaseData.so"   cachePath = "${CACHE}/basedata/bin"  dataPath="${RAWDATA}/wind/stock_eod" sectorPath="${RAWDATA}/wind/sectors/WindIndustries" handler="DataRegistry" id="basedata"/>
+<Module path="${DMGRLIB}/adjprice/libQLSIM_dataManagerAdjPrice.so" handler="DataRegistry" id="adjPrice"/>
+<Module path="${DMGRLIB}/intervaldata_5min/libQLSIM_dataManagerTick5min.so" cachePath="${CACHE}/intervaldata_5min/intervaldata_5min_last" dataPath="${RAWDATA}/tickdata/tick_5min_csv" formatPath="${RAWDATA}/tickdata/tick_5min_csv/format_last" handler="DataRegistry" id="intervaldata_5min_last"/>
+<Module path="${DMGRLIB}/intervaldata_5min/libQLSIM_dataManagerTick5min.so" cachePath="${CACHE}/intervaldata_5min/intervaldata_5min_vol" dataPath="${RAWDATA}/tickdata/tick_5min_csv" formatPath="${RAWDATA}/tickdata/tick_5min_csv/format_vol" handler="DataRegistry" id="intervaldata_5min_vol"/>
+<Module path="${DMGRLIB}/intervaldata_5min/libQLSIM_dataManagerTick5min.so" cachePath="${CACHE}/intervaldata_5min/intervaldata_5min_summ" dataPath="${RAWDATA}/tickdata/tick_5min_csv" formatPath="${RAWDATA}/tickdata/tick_5min_csv/format_summ" handler="DataRegistry" id="intervaldata_5min_summ"/>
+<Module handler="AlphaHandler" id="t9" path="/home/yuhao/workspace/alphasystem/yhSimFolder/libs/libyuhao_t9.version.1_0.so"/>
+
+<Module id="AlphaOpRevertAlpha" path="${MODULES}/libQLSIM_operationSample.so" handler="AlphaOpHandler"/>
+<Module id="AlphaOpTruncate" path="${MODULES}/libQLSIM_alphaOpTruncate.so" handler="AlphaOpHandler"/>
+<Module id="AlphaOpDecay" path="${MODULES}/libQLSIM_alphaOpDecay.so" handler="AlphaOpHandler"/>
+<Module id="AlphaOpIndNeut" path="${MODULES}/libQLSIM_alphaOpIndNeut.so" handler="AlphaOpHandler"/>
+<Module id="AlphaOpPower" path="${MODULES}/libQLSIM_alphaOpPower.so" handler="AlphaOpHandler"/>
+
+<Module id="StatsSimple" path="${MODULES}/libQLSIM_statsSimple.so" handler="StatsRegistry"/>
+
+<Module id="AlphaComboSimple" path="${MODULES}/libQLSIM_comboSample.so" handler="AlphaComboHandler"/>
+
+<Module id="Portfolio" path="${MODULES}/libQLSIM_portfolioSample.so" handler="PortfolioManager"/>
+</Modules>
+<Portfolio booksize="20e6" combinationId="AlphaComboSimple" doCombo="false" homecurrency="CNY" id="MyPort" moduleId="Portfolio">
+  <Stats fee="0." moduleId="StatsSimple" tax="0." vwappnl="false"/>
+  
+  <Alpha booksize="20e6" delay="1" id="yuhao_t9" method="1" moduleId="t9" ndays="5" para1="0" universeId="TOP2000">
+  <Description author="yuhao" birthday="20170616" category="intervaldata_5min" delay="1" ideaorigin="qilin" name="t9"/>
+  <Operations>
+    <Operation exp="3.0" moduleId="AlphaOpPower"/>
+    <Operation days="10" moduleId="AlphaOpDecay"/>
+    <Operation maxPercent="0.1" moduleId="AlphaOpTruncate"/>
+    <Operation group="industry" moduleId="AlphaOpIndNeut"/>
+  </Operations>
+  </Alpha>
+
+</Portfolio>
+</QLSim>

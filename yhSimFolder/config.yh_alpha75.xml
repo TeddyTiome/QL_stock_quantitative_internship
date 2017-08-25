@@ -1,0 +1,34 @@
+<QLSim>
+
+<Macros LOCAL="/home/yuhao/workspace/alphasystem/yhSimFolder/" />
+<Universe id="envStandard" startDate="20060101" endDate="0" />
+
+<Modules>
+  <!-- universe -->
+  <Module id="TOP2000" handler="Universe" />
+  <!-- data -->
+  <Module id="basedata" handler="DataRegistry" />
+  <Module id="adjPrice" handler="DataRegistry" />
+  <!-- alphas -->
+  <Module id="Alpha75" path="${LOCAL}/libs/libyh_alpha75.so" handler="AlphaHandler" /> 
+</Modules>
+
+
+
+
+<Portfolio moduleId="Portfolio" id="MyPort" booksize="20e6" homecurrency="CNY" combinationId="AlphaComboSimple" doCombo="false">
+  <Stats moduleId="StatsSimple" vwappnl="false" tax="0." fee="0."/>
+  
+  <Alpha moduleId="Alpha75" id="yh_alpha75" universeId="TOP2000" para1="4" para2="50" para3="12" booksize="20e6" delay="1" method="1" ndays="5">
+  <Description name="1p" author="qilin" ideaorigin="qilin" birthday="20170101" category="price_volume" delay="1"/>
+  <Operations>
+    <Operation moduleId="AlphaOpPower" exp="3.0"/>
+    <Operation moduleId="AlphaOpDecay" days="10"/>
+    <Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+    <Operation moduleId="AlphaOpIndNeut" group="industry"/>
+  </Operations>
+  </Alpha>
+
+</Portfolio>
+
+</QLSim>

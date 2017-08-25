@@ -1,0 +1,37 @@
+<QLSim>
+
+<Macros LOCAL="" />
+<Universe id="envStandard" startDate="20090101" endDate="0" />
+
+<Modules>
+  <!-- universe -->
+  <Module id="TOP2000" handler="Universe" />
+  <!-- data -->
+  <Module id="basedata" handler="DataRegistry" />
+  <Module id="adjPrice" handler="DataRegistry" />
+  <Module id="intervaldata_5min_last" handler="DataRegistry" />
+  <Module id="intervaldata_5min_vol" handler="DataRegistry" />
+  <Module id="intervaldata_5min_summ" handler="DataRegistry" />
+  <!-- alphas -->
+  <Module id="Alpha4" path="${SOREPO}/yuanyang/yuanyang_alpha4.version.1_1/libyuanyang_alpha4.version.1_1.so" handler="AlphaHandler" /> 
+</Modules>
+
+
+
+
+<Portfolio moduleId="Portfolio" id="MyPort" booksize="20e6" homecurrency="CNY" combinationId="AlphaComboSimple" doCombo="false">
+  <Stats moduleId="StatsSimple" vwappnl="false" tax="0." fee="0."/>
+
+  <Alpha moduleId="Alpha4" id="yuanyang_alpha4" universeId="TOP2000" para1="0.7" booksize="20e6" delay="1" method="1" ndays="10">
+  <Description name="4" author="yuanyang" ideaorigin="fangzheng20160708" birthday="20170606" category="intraday" delay="1"/>
+  <Operations>
+    <Operation moduleId="AlphaOpPower" exp="13.0"/>
+    <Operation moduleId="AlphaOpDecay" days="10"/>
+    <Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+    <Operation moduleId="AlphaOpIndNeut" group="industry"/>
+  </Operations>
+  </Alpha>
+
+</Portfolio>
+
+</QLSim>
